@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cálculo de Jubilación</title>
+</head>
+<body style="font-family: Arial; margin: 20px;">
+  <h1>Calculadora de Jubilación</h1>
+  <form id="formulario">
+    <label>Edad: <input type="number" id="edad" required></label><br><br>
+    <label>Años cotizados: <input type="number" id="cotizados" required></label><br><br>
+    <label>Otros datos: <input type="text" id="otros"></label><br><br>
+    <button type="submit">Calcular</button>
+  </form>
+
+  <h2 id="resultado"></h2>
+
+  <script>
+    document.getElementById('formulario').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      
+      const edad = document.getElementById('edad').value;
+      const cotizados = document.getElementById('cotizados').value;
+      const otros = document.getElementById('otros').value;
+
+      const response = await fetch(`/calcular-jubilacion?edad=${edad}&cotizados=${cotizados}&otros=${otros}`);
+      const data = await response.json();
+
+      if (data.error) {
+        document.getElementById('resultado').textContent = "Error: " + data.error;
+      } else {
+        document.getElementById('resultado').textContent = `¿Puede jubilarse? ${data.puede_jubilarse}`;
+      }
+    });
+  </script>
+</body>
+</html>
