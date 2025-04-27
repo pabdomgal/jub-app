@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -7,42 +8,37 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(express.json());
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));  // Para servir archivos estáticos
 
-// Ruta principal
+// Ruta principal para mostrar el formulario
 app.get('/', (req, res) => {
-  res.send('¡Bienvenido a la calculadora de jubilación!');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));  // Sirve el archivo HTML
 });
 
-// Ruta para calcular si puede jubilarse
-app.get('/calcular-jubilacion', (req, res) => {
-  // Aquí recibimos los parámetros directamente de la query
-  const edad = parseInt(req.query.edad);
-  const cotizados = parseInt(req.query.cotizados);
+// Ruta para procesar los datos del formulario
+app.post('/calcular-jubilacion', (req, res) => {
+    const { edad, cotizados } = req.body;
 
-  // Validar si se recibieron correctamente los parámetros
-  if (isNaN(edad) || isNaN(cotizados)) {
-    return res.status(400).json({
-      error: "Por favor, ingresa los parámetros 'edad' y 'cotizados' en la URL."
+    // Convertir a números (aunque podría venir como string)
+    const edadNum = parseInt(edad, 10);
+    const cotizadosNum = parseInt(cotizados, 10);
+
+    let puedeJubilarse = false;
+
+    // Lógica de jubilación (puedes adaptarla)
+    if ((edadNum >= 65 && cotizadosNum >= 15) || (edadNum >= 63 && cotizadosNum >= 35)) {
+        puedeJubilarse = true;
+    }
+
+    // Enviar la respuesta al frontend
+    res.json({
+        puedeJubilarse: puedeJubilarse ? 'Sí' : 'No',
+        edad: edadNum,
+        cotizados: cotizadosNum
     });
-  }
-
-  // Lógica para calcular si puede jubilarse
-  let puedeJubilarse = false;
-
-  // Condiciones para jubilarse
-  if ((edad >= 65 && cotizados >= 15) || (edad >= 63 && cotizados >= 35)) {
-    puedeJubilarse = true;
-  }
-
-  // Resultado en formato JSON
-  res.json({
-    puedeJubilarse: puedeJubilarse ? 'Sí' : 'No',
-    edad,
-    cotizados
-  });
 });
 
-// Iniciar el servidor
+// Iniciar servidor
 app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+    console.log(`Servidor corriendo en http://localhost:${port}`);
 });
