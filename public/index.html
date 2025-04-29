@@ -1,92 +1,129 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcular Jubilación</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            text-align: center;
-        }
-        input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .result {
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calcular Jubilación</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f4f4f4;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      text-align: center;
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 20px;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Calcular Jubilación</h2>
-        <form id="jubilacionForm">
-            <input type="number" id="edad" placeholder="Edad" required>
-            <input type="number" id="cotizados" placeholder="Años Cotizados" required>
-            <button type="submit">Calcular</button>
-        </form>
-        <div class="result" id="result"></div>
-    </div>
+  <div class="container">
+    <h2>Calcular Jubilación</h2>
+    <form id="jubilacionForm">
+      <h4>Cotización Total</h4>
+      <input type="number" id="ct_anios" placeholder="Años" required />
+      <input type="number" id="ct_meses" placeholder="Meses" required />
+      <input type="number" id="ct_dias" placeholder="Días" required />
 
-    <script>
-        // Manejo del formulario
-        document.getElementById('jubilacionForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+      <h4>Cotización como Policía Local</h4>
+      <input type="number" id="cp_anios" placeholder="Años" required />
+      <input type="number" id="cp_meses" placeholder="Meses" required />
+      <input type="number" id="cp_dias" placeholder="Días" required />
 
-            const edad = document.getElementById('edad').value;
-            const cotizados = document.getElementById('cotizados').value;
+      <h4>Fecha Actual</h4>
+      <input type="number" id="fa_dia" placeholder="Día" required />
+      <input type="number" id="fa_mes" placeholder="Mes" required />
+      <input type="number" id="fa_anio" placeholder="Año" required />
 
-            // Enviar datos al servidor
-            fetch('/calcular-jubilacion', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ edad, cotizados })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Mostrar el resultado
-                const resultDiv = document.getElementById('result');
-                resultDiv.innerHTML = `
-                    <p>Edad: ${data.edad}</p>
-                    <p>Años cotizados: ${data.cotizados}</p>
-                    <p>¿Puede jubilarse? ${data.puedeJubilarse}</p>
-                `;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script>
+      <h4>Fecha de Nacimiento</h4>
+      <input type="number" id="fn_dia" placeholder="Día" required />
+      <input type="number" id="fn_mes" placeholder="Mes" required />
+      <input type="number" id="fn_anio" placeholder="Año" required />
+
+      <button type="submit">Calcular</button>
+    </form>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    document.getElementById('jubilacionForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const data = {
+        cotizacionTotal: {
+          anios: +document.getElementById('ct_anios').value,
+          meses: +document.getElementById('ct_meses').value,
+          dias: +document.getElementById('ct_dias').value
+        },
+        cotizacionPolicia: {
+          anios: +document.getElementById('cp_anios').value,
+          meses: +document.getElementById('cp_meses').value,
+          dias: +document.getElementById('cp_dias').value
+        },
+        fechaActual: {
+          dia: +document.getElementById('fa_dia').value,
+          mes: +document.getElementById('fa_mes').value,
+          anio: +document.getElementById('fa_anio').value
+        },
+        fechaNacimiento: {
+          dia: +document.getElementById('fn_dia').value,
+          mes: +document.getElementById('fn_mes').value,
+          anio: +document.getElementById('fn_anio').value
+        }
+      };
+
+      fetch('/calcular-jubilacion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `
+          <p><strong>Fecha de Jubilación:</strong> ${data.fechaJubilacion}</p>
+          <p><strong>Edad en la fecha de jubilación:</strong> ${data.edadEnJubilacion.anios} años, ${data.edadEnJubilacion.meses} meses, ${data.edadEnJubilacion.dias} días</p>
+          <p><strong>Días de Bonificación:</strong> ${data.bonificacionDias}</p>
+          <p><strong>Edad Ordinaria:</strong> ${data.edadOrdinaria.anios} años, ${data.edadOrdinaria.meses} meses</p>
+          <p><strong>Edad Jubilación Anticipada:</strong> ${data.edadJubilacionAnticipada.anios} años, ${data.edadJubilacionAnticipada.meses} meses</p>
+        `;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('result').innerHTML = '<p>Error al calcular. Revisa los datos.</p>';
+      });
+    });
+  </script>
 </body>
 </html>
