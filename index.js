@@ -26,7 +26,7 @@ app.post('/calcular-jubilacion', (req, res) => {
   } = req.body;
 
   const diasTotales = (cotizacion) => 
-    cotizacion.anios * 365 + cotizacion.meses * 30 + cotizacion.dias;
+    cotizacion.años * 365 + cotizacion.meses * 30 + cotizacion.dias;
 
   const diasCotizadosTotal = diasTotales(cotizacionTotal);
   const diasPolicia = diasTotales(cotizacionPolicia);
@@ -35,8 +35,8 @@ app.post('/calcular-jubilacion', (req, res) => {
   const bonificacionDias = Math.floor(diasPolicia * 0.2);
 
   // Calcular años cotizados totales para reglas
-  const totalAniosCotizados = diasCotizadosTotal / 365;
-  const aniosPolicia = diasPolicia / 365;
+  const totalañosCotizados = diasCotizadosTotal / 365;
+  const añosPolicia = diasPolicia / 365;
 
   // Calcular fecha de jubilación ordinaria según REGLAS
   const fechaActualDate = new Date(fechaActual.anio, fechaActual.mes - 1, fechaActual.dia);
@@ -46,35 +46,35 @@ app.post('/calcular-jubilacion', (req, res) => {
   const anioEvaluado = fechaActual.anio;
 
   if (anioEvaluado < 2027) {
-    if (totalAniosCotizados >= 38 + 3 / 12) {
-      edadOrdinaria = { anios: 65, meses: 0 };
+    if (totalañosCotizados >= 38 + 3 / 12) {
+      edadOrdinaria = { años: 65, meses: 0 };
     } else {
-      edadOrdinaria = anioEvaluado === 2025 ? { anios: 66, meses: 8 } : { anios: 66, meses: 10 };
+      edadOrdinaria = anioEvaluado === 2025 ? { años: 66, meses: 8 } : { años: 66, meses: 10 };
     }
   } else {
-    if (totalAniosCotizados >= 38.5) {
-      edadOrdinaria = { anios: 65, meses: 0 };
+    if (totalañosCotizados >= 38.5) {
+      edadOrdinaria = { años: 65, meses: 0 };
     } else {
-      edadOrdinaria = { anios: 67, meses: 0 };
+      edadOrdinaria = { años: 67, meses: 0 };
     }
   }
 
   // Calcular cuántos años puede adelantar
   let maxAnticipacion = 0;
-  if (aniosPolicia >= 36.5) {
+  if (añosPolicia >= 36.5) {
     maxAnticipacion = 6;
   } else {
     maxAnticipacion = Math.min(5, bonificacionDias / 365);
   }
 
   const edadJubilacionAnticipada = {
-    anios: Math.floor(edadOrdinaria.anios - maxAnticipacion),
+    años: Math.floor(edadOrdinaria.años - maxAnticipacion),
     meses: edadOrdinaria.meses
   };
 
   // Calcular la fecha de jubilación anticipada
   const fechaJubilacion = new Date(nacimientoDate);
-  fechaJubilacion.setFullYear(fechaJubilacion.getFullYear() + edadJubilacionAnticipada.anios);
+  fechaJubilacion.setFullYear(fechaJubilacion.getFullYear() + edadJubilacionAnticipada.años);
   fechaJubilacion.setMonth(fechaJubilacion.getMonth() + edadJubilacionAnticipada.meses);
 
   // Edad que tendrá en la fecha de jubilación
@@ -82,7 +82,7 @@ app.post('/calcular-jubilacion', (req, res) => {
   const edadFinalDate = new Date(edadFinalMs);
 
   const edadFinal = {
-    anios: fechaJubilacion.getFullYear() - nacimientoDate.getFullYear(),
+    años: fechaJubilacion.getFullYear() - nacimientoDate.getFullYear(),
     meses: fechaJubilacion.getMonth() - nacimientoDate.getMonth(),
     dias: fechaJubilacion.getDate() - nacimientoDate.getDate()
   };
@@ -93,7 +93,7 @@ app.post('/calcular-jubilacion', (req, res) => {
   }
 
   if (edadFinal.meses < 0) {
-    edadFinal.anios -= 1;
+    edadFinal.años -= 1;
     edadFinal.meses += 12;
   }
 
