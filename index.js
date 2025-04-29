@@ -21,8 +21,8 @@ app.post('/calcular-jubilacion', (req, res) => {
   const {
     cotizacionTotal, // { años, meses, dias }
     cotizacionPolicia, // { años, meses, dias }
-    fechaActual, // { dia, mes, anio }
-    fechaNacimiento // { dia, mes, anio }
+    fechaActual, // { dia, mes, año }
+    fechaNacimiento // { dia, mes, año }
   } = req.body;
 
   const diasTotales = (cotizacion) => 
@@ -39,17 +39,17 @@ app.post('/calcular-jubilacion', (req, res) => {
   const añosPolicia = diasPolicia / 365;
 
   // Calcular fecha de jubilación ordinaria según REGLAS
-  const fechaActualDate = new Date(fechaActual.anio, fechaActual.mes - 1, fechaActual.dia);
-  const nacimientoDate = new Date(fechaNacimiento.anio, fechaNacimiento.mes - 1, fechaNacimiento.dia);
+  const fechaActualDate = new Date(fechaActual.año, fechaActual.mes - 1, fechaActual.dia);
+  const nacimientoDate = new Date(fechaNacimiento.año, fechaNacimiento.mes - 1, fechaNacimiento.dia);
 
   let edadOrdinaria; // en años y meses
-  const anioEvaluado = fechaActual.anio;
+  const añoEvaluado = fechaActual.año;
 
-  if (anioEvaluado < 2027) {
+  if (añoEvaluado < 2027) {
     if (totalañosCotizados >= 38 + 3 / 12) {
       edadOrdinaria = { años: 65, meses: 0 };
     } else {
-      edadOrdinaria = anioEvaluado === 2025 ? { años: 66, meses: 8 } : { años: 66, meses: 10 };
+      edadOrdinaria = añoEvaluado === 2025 ? { años: 66, meses: 8 } : { años: 66, meses: 10 };
     }
   } else {
     if (totalañosCotizados >= 38.5) {
