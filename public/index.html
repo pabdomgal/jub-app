@@ -1,129 +1,135 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calcular Jubilación</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #f4f4f4;
-    }
-    .container {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 350px;
-      text-align: center;
-    }
-    input {
-      width: 80%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      padding: 10px 15px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .result {
-      margin-top: 20px;
-      text-align: left;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcular Jubilación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Calcular Jubilación</h2>
-    <form id="jubilacionForm">
-      <h4>Cotización Total</h4>
-      <input type="number" id="ct_años" placeholder="Años" required />
-      <input type="number" id="ct_meses" placeholder="Meses" required />
-      <input type="number" id="ct_dias" placeholder="Días" required />
+    <div class="container">
+        <h2>Calcular Jubilación</h2>
+        <form id="jubilacionForm">
+            <div>
+                <label for="cotizacionTotal">Cotización Total (Años, Meses, Días)</label><br>
+                <input type="number" id="cotizacionTotalaños" placeholder="Años cotizados" required>
+                <input type="number" id="cotizacionTotalMeses" placeholder="Meses cotizados" required>
+                <input type="number" id="cotizacionTotalDias" placeholder="Días cotizados" required>
+            </div>
+            <div>
+                <label for="cotizacionPolicia">Cotización como Policía Local (Años, Meses, Días)</label><br>
+                <input type="number" id="cotizacionPoliciaaños" placeholder="Años como Policía" required>
+                <input type="number" id="cotizacionPoliciaMeses" placeholder="Meses como Policía" required>
+                <input type="number" id="cotizacionPoliciaDias" placeholder="Días como Policía" required>
+            </div>
+            <div>
+                <label for="fechaActual">Fecha Actual (día, mes, año)</label><br>
+                <input type="number" id="fechaActualDia" placeholder="Día actual" required>
+                <input type="number" id="fechaActualMes" placeholder="Mes actual" required>
+                <input type="number" id="fechaActualaño" placeholder="Año actual" required>
+            </div>
+            <div>
+                <label for="fechaNacimiento">Fecha de Nacimiento (día, mes, año)</label><br>
+                <input type="number" id="nacimientoDia" placeholder="Día nacimiento" required>
+                <input type="number" id="nacimientoMes" placeholder="Mes nacimiento" required>
+                <input type="number" id="nacimientoaño" placeholder="Año nacimiento" required>
+            </div>
+            <button type="submit">Calcular</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
 
-      <h4>Cotización como Policía Local</h4>
-      <input type="number" id="cp_años" placeholder="Años" required />
-      <input type="number" id="cp_meses" placeholder="Meses" required />
-      <input type="number" id="cp_dias" placeholder="Días" required />
+    <script>
+        // Manejo del formulario
+        document.getElementById('jubilacionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-      <h4>Fecha Actual</h4>
-      <input type="number" id="fa_dia" placeholder="Día" required />
-      <input type="number" id="fa_mes" placeholder="Mes" required />
-      <input type="number" id="fa_año" placeholder="Año" required />
+            // Obtener valores del formulario
+            const cotizacionTotalaños = document.getElementById('cotizacionTotalaños').value;
+            const cotizacionTotalMeses = document.getElementById('cotizacionTotalMeses').value;
+            const cotizacionTotalDias = document.getElementById('cotizacionTotalDias').value;
 
-      <h4>Fecha de Nacimiento</h4>
-      <input type="number" id="fn_dia" placeholder="Día" required />
-      <input type="number" id="fn_mes" placeholder="Mes" required />
-      <input type="number" id="fn_año" placeholder="Año" required />
+            const cotizacionPoliciaaños = document.getElementById('cotizacionPoliciaaños').value;
+            const cotizacionPoliciaMeses = document.getElementById('cotizacionPoliciaMeses').value;
+            const cotizacionPoliciaDias = document.getElementById('cotizacionPoliciaDias').value;
 
-      <button type="submit">Calcular</button>
-    </form>
-    <div class="result" id="result"></div>
-  </div>
+            const fechaActualDia = document.getElementById('fechaActualDia').value;
+            const fechaActualMes = document.getElementById('fechaActualMes').value;
+            const fechaActualaño = document.getElementById('fechaActualaño').value;
 
-  <script>
-    document.getElementById('jubilacionForm').addEventListener('submit', function (event) {
-      event.preventDefault();
+            const nacimientoDia = document.getElementById('nacimientoDia').value;
+            const nacimientoMes = document.getElementById('nacimientoMes').value;
+            const nacimientoaño = document.getElementById('nacimientoaño').value;
 
-      const data = {
-        cotizacionTotal: {
-          años: +document.getElementById('ct_años').value,
-          meses: +document.getElementById('ct_meses').value,
-          dias: +document.getElementById('ct_dias').value
-        },
-        cotizacionPolicia: {
-          años: +document.getElementById('cp_años').value,
-          meses: +document.getElementById('cp_meses').value,
-          dias: +document.getElementById('cp_dias').value
-        },
-        fechaActual: {
-          dia: +document.getElementById('fa_dia').value,
-          mes: +document.getElementById('fa_mes').value,
-          año: +document.getElementById('fa_año').value
-        },
-        fechaNacimiento: {
-          dia: +document.getElementById('fn_dia').value,
-          mes: +document.getElementById('fn_mes').value,
-          año: +document.getElementById('fn_año').value
-        }
-      };
-
-      fetch('/calcular-jubilacion', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = `
-          <p><strong>Fecha de Jubilación:</strong> ${data.fechaJubilacion}</p>
-          <p><strong>Edad en la fecha de jubilación:</strong> ${data.edadEnJubilacion.años} años, ${data.edadEnJubilacion.meses} meses, ${data.edadEnJubilacion.dias} días</p>
-          <p><strong>Días de Bonificación:</strong> ${data.bonificacionDias}</p>
-          <p><strong>Edad Ordinaria:</strong> ${data.edadOrdinaria.años} años, ${data.edadOrdinaria.meses} meses</p>
-          <p><strong>Edad Jubilación Anticipada:</strong> ${data.edadJubilacionAnticipada.años} años, ${data.edadJubilacionAnticipada.meses} meses</p>
-        `;
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('result').innerHTML = '<p>Error al calcular. Revisa los datos.</p>';
-      });
-    });
-  </script>
+            // Enviar datos al servidor
+            fetch('/calcular-jubilacion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cotizacionTotal: { años: cotizacionTotalaños, meses: cotizacionTotalMeses, dias: cotizacionTotalDias },
+                    cotizacionPolicia: { años: cotizacionPoliciaaños, meses: cotizacionPoliciaMeses, dias: cotizacionPoliciaDias },
+                    fechaActual: { dia: fechaActualDia, mes: fechaActualMes, año: fechaActualaño },
+                    fechaNacimiento: { dia: nacimientoDia, mes: nacimientoMes, año: nacimientoaño }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Mostrar el resultado
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `
+                    <p><strong>Fecha de Jubilación:</strong> ${data.fechaJubilacion}</p>
+                    <p><strong>Edad en la Fecha de Jubilación:</strong> ${data.edadEnJubilacion.años} años, ${data.edadEnJubilacion.meses} meses, ${data.edadEnJubilacion.dias} días</p>
+                    <p><strong>Bonificación por Policía Local (Días):</strong> ${data.bonificacionDias} días</p>
+                    <p><strong>Edad Ordinaria para Jubilación:</strong> ${data.edadOrdinaria.años} años, ${data.edadOrdinaria.meses} meses</p>
+                    <p><strong>Edad de Jubilación Anticipada:</strong> ${data.edadJubilacionAnticipada.años} años, ${data.edadJubilacionAnticipada.meses} meses</p>
+                `;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 </html>
