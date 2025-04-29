@@ -67,35 +67,39 @@ app.post('/calcular-jubilacion', (req, res) => {
   const diasPolicia = convertirACotizacion(cotizacionPolicia);
   const bonificacion = Math.floor(diasPolicia * 0.2);
 
-  const añosTotales = diferenciaFechas(nacimiento, fechaHoy).años;
-  const añosCotizados = diferenciaFechas(nacimiento, sumarTiempo(nacimiento, cotizacionTotal));
-  const añosPolicia = diferenciaFechas(nacimiento, sumarTiempo(nacimiento, cotizacionPolicia));
-
   const totalCotizadosMeses = cotizacionTotal.años * 12 + cotizacionTotal.meses;
   const totalPoliciaMeses = cotizacionPolicia.años * 12 + cotizacionPolicia.meses;
 
   const añoEvaluado = fechaHoy.getFullYear();
   let edadOrdinaria;
 
-  if (añoEvaluado < 2027) {
-    if (totalCotizadosMeses >= 459) { // 38 años y 3 meses
+  if (añoEvaluado === 2025) {
+    if (totalCotizadosMeses >= 459) {
       edadOrdinaria = { años: 65, meses: 0 };
     } else {
-      edadOrdinaria = añoEvaluado === 2025 ? { años: 66, meses: 8 } : { años: 66, meses: 10 };
+      edadOrdinaria = { años: 66, meses: 8 };
     }
-  } else {
-    if (totalCotizadosMeses >= 462) { // 38 años y 6 meses
+  } else if (añoEvaluado === 2026) {
+    if (totalCotizadosMeses >= 459) {
+      edadOrdinaria = { años: 65, meses: 0 };
+    } else {
+      edadOrdinaria = { años: 66, meses: 10 };
+    }
+  } else if (añoEvaluado >= 2027) {
+    if (totalCotizadosMeses >= 462) {
       edadOrdinaria = { años: 65, meses: 0 };
     } else {
       edadOrdinaria = { años: 67, meses: 0 };
     }
   }
 
+  // Determinar cuántos años antes se puede jubilar
   let maxAnticipacion;
   if (totalPoliciaMeses >= 438) { // 36 años y 6 meses
     maxAnticipacion = 6;
   } else {
-    maxAnticipacion = Math.min(5, Math.floor(bonificacion / 365));
+    const maxPorBonificacion = Math.floor(bonificacion / 365);
+    maxAnticipacion = Math.min(5, maxPorBonificacion);
   }
 
   const edadAnticipada = {
