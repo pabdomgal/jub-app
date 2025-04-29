@@ -17,64 +17,80 @@
         }
         .container {
             background-color: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 350px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
             text-align: center;
         }
-        input {
-            width: 80%;
-            padding: 10px;
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        input, button {
+            width: 90%;
+            padding: 12px;
             margin: 10px 0;
-            border-radius: 5px;
+            border-radius: 8px;
             border: 1px solid #ccc;
         }
         button {
-            padding: 10px 15px;
             background-color: #4CAF50;
             color: white;
-            border: none;
-            border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
             background-color: #45a049;
         }
+        label {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+        }
         .result {
             margin-top: 20px;
+            padding: 10px;
+            background-color: #e9f7df;
+            border-radius: 8px;
+            color: #4CAF50;
+            text-align: left;
+        }
+        .result p {
+            margin: 8px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Calcular Jubilación</h2>
+        <h2>Calculadora de Jubilación</h2>
         <form id="jubilacionForm">
             <div>
-                <label for="cotizacionTotal">Cotización Total </label><br>
-                <input type="number" id="cotizacionTotalaños" placeholder="Años cotizados" required>
+                <label for="cotizacionTotal">Cotización Total </label>
+                <input type="number" id="cotizacionTotalAnios" placeholder="Años cotizados" required>
                 <input type="number" id="cotizacionTotalMeses" placeholder="Meses cotizados" required>
                 <input type="number" id="cotizacionTotalDias" placeholder="Días cotizados" required>
             </div>
             <div>
-                <label for="cotizacionPolicia">Cotización como Policía Local </label><br>
-                <input type="number" id="cotizacionPoliciaaños" placeholder="Años como Policía" required>
+                <label for="cotizacionPolicia">Cotización como Policía Local</label>
+                <input type="number" id="cotizacionPoliciaAnios" placeholder="Años como Policía" required>
                 <input type="number" id="cotizacionPoliciaMeses" placeholder="Meses como Policía" required>
                 <input type="number" id="cotizacionPoliciaDias" placeholder="Días como Policía" required>
             </div>
             <div>
-                <label for="fechaActual">Fecha Actual</label><br>
+                <label for="fechaActual">Fecha Actual</label>
                 <input type="number" id="fechaActualDia" placeholder="Día actual" required>
                 <input type="number" id="fechaActualMes" placeholder="Mes actual" required>
-                <input type="number" id="fechaActualaño" placeholder="Año actual" required>
+                <input type="number" id="fechaActualAnio" placeholder="Año actual" required>
             </div>
             <div>
-                <label for="fechaNacimiento">Fecha de Nacimiento</label><br>
+                <label for="fechaNacimiento">Fecha de Nacimiento</label>
                 <input type="number" id="nacimientoDia" placeholder="Día nacimiento" required>
                 <input type="number" id="nacimientoMes" placeholder="Mes nacimiento" required>
-                <input type="number" id="nacimientoaño" placeholder="Año nacimiento" required>
+                <input type="number" id="nacimientoAnio" placeholder="Año nacimiento" required>
             </div>
-            <button type="submit">Calcular</button>
+            <button type="submit">Calcular Jubilación</button>
         </form>
         <div class="result" id="result"></div>
     </div>
@@ -85,21 +101,21 @@
             event.preventDefault();
 
             // Obtener valores del formulario
-            const cotizacionTotalaños = document.getElementById('cotizacionTotalaños').value;
+            const cotizacionTotalAnios = document.getElementById('cotizacionTotalAnios').value;
             const cotizacionTotalMeses = document.getElementById('cotizacionTotalMeses').value;
             const cotizacionTotalDias = document.getElementById('cotizacionTotalDias').value;
 
-            const cotizacionPoliciaaños = document.getElementById('cotizacionPoliciaaños').value;
+            const cotizacionPoliciaAnios = document.getElementById('cotizacionPoliciaAnios').value;
             const cotizacionPoliciaMeses = document.getElementById('cotizacionPoliciaMeses').value;
             const cotizacionPoliciaDias = document.getElementById('cotizacionPoliciaDias').value;
 
             const fechaActualDia = document.getElementById('fechaActualDia').value;
             const fechaActualMes = document.getElementById('fechaActualMes').value;
-            const fechaActualaño = document.getElementById('fechaActualaño').value;
+            const fechaActualAnio = document.getElementById('fechaActualAnio').value;
 
             const nacimientoDia = document.getElementById('nacimientoDia').value;
             const nacimientoMes = document.getElementById('nacimientoMes').value;
-            const nacimientoaño = document.getElementById('nacimientoaño').value;
+            const nacimientoAnio = document.getElementById('nacimientoAnio').value;
 
             // Enviar datos al servidor
             fetch('/calcular-jubilacion', {
@@ -108,10 +124,10 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    cotizacionTotal: { años: cotizacionTotalaños, meses: cotizacionTotalMeses, dias: cotizacionTotalDias },
-                    cotizacionPolicia: { años: cotizacionPoliciaaños, meses: cotizacionPoliciaMeses, dias: cotizacionPoliciaDias },
-                    fechaActual: { dia: fechaActualDia, mes: fechaActualMes, año: fechaActualaño },
-                    fechaNacimiento: { dia: nacimientoDia, mes: nacimientoMes, año: nacimientoaño }
+                    cotizacionTotal: { anios: cotizacionTotalAnios, meses: cotizacionTotalMeses, dias: cotizacionTotalDias },
+                    cotizacionPolicia: { anios: cotizacionPoliciaAnios, meses: cotizacionPoliciaMeses, dias: cotizacionPoliciaDias },
+                    fechaActual: { dia: fechaActualDia, mes: fechaActualMes, anio: fechaActualAnio },
+                    fechaNacimiento: { dia: nacimientoDia, mes: nacimientoMes, anio: nacimientoAnio }
                 })
             })
             .then(response => response.json())
@@ -120,10 +136,10 @@
                 const resultDiv = document.getElementById('result');
                 resultDiv.innerHTML = `
                     <p><strong>Fecha de Jubilación:</strong> ${data.fechaJubilacion}</p>
-                    <p><strong>Edad en la Fecha de Jubilación:</strong> ${data.edadEnJubilacion.años} años, ${data.edadEnJubilacion.meses} meses, ${data.edadEnJubilacion.dias} días</p>
+                    <p><strong>Edad en la Fecha de Jubilación:</strong> ${data.edadEnJubilacion.anios} años, ${data.edadEnJubilacion.meses} meses, ${data.edadEnJubilacion.dias} días</p>
                     <p><strong>Bonificación por Policía Local:</strong> ${data.bonificacionDias} días</p>
-                    <p><strong>Edad Ordinaria para Jubilación:</strong> ${data.edadOrdinaria.años} años, ${data.edadOrdinaria.meses} meses</p>
-                    <p><strong>Edad de Jubilación Anticipada:</strong> ${data.edadJubilacionAnticipada.años} años, ${data.edadJubilacionAnticipada.meses} meses</p>
+                    <p><strong>Edad Ordinaria para Jubilación:</strong> ${data.edadOrdinaria.anios} años, ${data.edadOrdinaria.meses} meses</p>
+                    <p><strong>Edad de Jubilación Anticipada:</strong> ${data.edadJubilacionAnticipada.anios} años, ${data.edadJubilacionAnticipada.meses} meses</p>
                 `;
             })
             .catch(error => {
