@@ -52,12 +52,12 @@
     <h2>Calcular Jubilación</h2>
     <form id="jubilacionForm">
       <h4>Cotización Total</h4>
-      <input type="number" id="ct_anios" placeholder="Años" required />
+      <input type="number" id="ct_años" placeholder="Años" required />
       <input type="number" id="ct_meses" placeholder="Meses" required />
       <input type="number" id="ct_dias" placeholder="Días" required />
 
       <h4>Cotización como Policía Local</h4>
-      <input type="number" id="cp_anios" placeholder="Años" required />
+      <input type="number" id="cp_años" placeholder="Años" required />
       <input type="number" id="cp_meses" placeholder="Meses" required />
       <input type="number" id="cp_dias" placeholder="Días" required />
 
@@ -82,12 +82,12 @@
 
       const data = {
         cotizacionTotal: {
-          anios: +document.getElementById('ct_anios').value,
+          años: +document.getElementById('ct_años').value,
           meses: +document.getElementById('ct_meses').value,
           dias: +document.getElementById('ct_dias').value
         },
         cotizacionPolicia: {
-          anios: +document.getElementById('cp_anios').value,
+          años: +document.getElementById('cp_años').value,
           meses: +document.getElementById('cp_meses').value,
           dias: +document.getElementById('cp_dias').value
         },
@@ -113,10 +113,10 @@
         const resultDiv = document.getElementById('result');
         resultDiv.innerHTML = `
           <p><strong>Fecha de Jubilación:</strong> ${data.fechaJubilacion}</p>
-          <p><strong>Edad en la fecha de jubilación:</strong> ${data.edadEnJubilacion.anios} años, ${data.edadEnJubilacion.meses} meses, ${data.edadEnJubilacion.dias} días</p>
+          <p><strong>Edad en la fecha de jubilación:</strong> ${data.edadEnJubilacion.años} años, ${data.edadEnJubilacion.meses} meses, ${data.edadEnJubilacion.dias} días</p>
           <p><strong>Días de Bonificación:</strong> ${data.bonificacionDias}</p>
-          <p><strong>Edad Ordinaria:</strong> ${data.edadOrdinaria.anios} años, ${data.edadOrdinaria.meses} meses</p>
-          <p><strong>Edad Jubilación Anticipada:</strong> ${data.edadJubilacionAnticipada.anios} años, ${data.edadJubilacionAnticipada.meses} meses</p>
+          <p><strong>Edad Ordinaria:</strong> ${data.edadOrdinaria.años} años, ${data.edadOrdinaria.meses} meses</p>
+          <p><strong>Edad Jubilación Anticipada:</strong> ${data.edadJubilacionAnticipada.años} años, ${data.edadJubilacionAnticipada.meses} meses</p>
         `;
       })
       .catch(error => {
