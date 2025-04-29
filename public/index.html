@@ -51,25 +51,25 @@
         <h2>Calcular Jubilación</h2>
         <form id="jubilacionForm">
             <div>
-                <label for="cotizacionTotal">Cotización Total (Años, Meses, Días)</label><br>
+                <label for="cotizacionTotal">Cotización Total </label><br>
                 <input type="number" id="cotizacionTotalaños" placeholder="Años cotizados" required>
                 <input type="number" id="cotizacionTotalMeses" placeholder="Meses cotizados" required>
                 <input type="number" id="cotizacionTotalDias" placeholder="Días cotizados" required>
             </div>
             <div>
-                <label for="cotizacionPolicia">Cotización como Policía Local (Años, Meses, Días)</label><br>
+                <label for="cotizacionPolicia">Cotización como Policía Local </label><br>
                 <input type="number" id="cotizacionPoliciaaños" placeholder="Años como Policía" required>
                 <input type="number" id="cotizacionPoliciaMeses" placeholder="Meses como Policía" required>
                 <input type="number" id="cotizacionPoliciaDias" placeholder="Días como Policía" required>
             </div>
             <div>
-                <label for="fechaActual">Fecha Actual (día, mes, año)</label><br>
+                <label for="fechaActual">Fecha Actual</label><br>
                 <input type="number" id="fechaActualDia" placeholder="Día actual" required>
                 <input type="number" id="fechaActualMes" placeholder="Mes actual" required>
                 <input type="number" id="fechaActualaño" placeholder="Año actual" required>
             </div>
             <div>
-                <label for="fechaNacimiento">Fecha de Nacimiento (día, mes, año)</label><br>
+                <label for="fechaNacimiento">Fecha de Nacimiento</label><br>
                 <input type="number" id="nacimientoDia" placeholder="Día nacimiento" required>
                 <input type="number" id="nacimientoMes" placeholder="Mes nacimiento" required>
                 <input type="number" id="nacimientoaño" placeholder="Año nacimiento" required>
@@ -121,7 +121,7 @@
                 resultDiv.innerHTML = `
                     <p><strong>Fecha de Jubilación:</strong> ${data.fechaJubilacion}</p>
                     <p><strong>Edad en la Fecha de Jubilación:</strong> ${data.edadEnJubilacion.años} años, ${data.edadEnJubilacion.meses} meses, ${data.edadEnJubilacion.dias} días</p>
-                    <p><strong>Bonificación por Policía Local (Días):</strong> ${data.bonificacionDias} días</p>
+                    <p><strong>Bonificación por Policía Local:</strong> ${data.bonificacionDias} días</p>
                     <p><strong>Edad Ordinaria para Jubilación:</strong> ${data.edadOrdinaria.años} años, ${data.edadOrdinaria.meses} meses</p>
                     <p><strong>Edad de Jubilación Anticipada:</strong> ${data.edadJubilacionAnticipada.años} años, ${data.edadJubilacionAnticipada.meses} meses</p>
                 `;
