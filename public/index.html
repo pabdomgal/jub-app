@@ -76,6 +76,54 @@
     <div class="result" id="result"></div>
   </div>
 
-  <script src="index.js"></script>
+  <script>
+    document.getElementById('jubilacionForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const data = {
+        cotizacionTotal: {
+          anios: +document.getElementById('ct_anios').value,
+          meses: +document.getElementById('ct_meses').value,
+          dias: +document.getElementById('ct_dias').value
+        },
+        cotizacionPolicia: {
+          anios: +document.getElementById('cp_anios').value,
+          meses: +document.getElementById('cp_meses').value,
+          dias: +document.getElementById('cp_dias').value
+        },
+        fechaActual: {
+          dia: +document.getElementById('fa_dia').value,
+          mes: +document.getElementById('fa_mes').value,
+          anio: +document.getElementById('fa_anio').value
+        },
+        fechaNacimiento: {
+          dia: +document.getElementById('fn_dia').value,
+          mes: +document.getElementById('fn_mes').value,
+          anio: +document.getElementById('fn_anio').value
+        }
+      };
+
+      fetch('/calcular-jubilacion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `
+          <p><strong>Fecha de Jubilación:</strong> ${data.fechaJubilacion}</p>
+          <p><strong>Edad en la fecha de jubilación:</strong> ${data.edadEnJubilacion.anios} años, ${data.edadEnJubilacion.meses} meses, ${data.edadEnJubilacion.dias} días</p>
+          <p><strong>Días de Bonificación:</strong> ${data.bonificacionDias}</p>
+          <p><strong>Edad Ordinaria:</strong> ${data.edadOrdinaria.anios} años, ${data.edadOrdinaria.meses} meses</p>
+          <p><strong>Edad Jubilación Anticipada:</strong> ${data.edadAnticipada.anios} años, ${data.edadAnticipada.meses} meses</p>
+        `;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('result').innerHTML = '<p>Error al calcular. Revisa los datos.</p>';
+      });
+    });
+  </script>
 </body>
 </html>
