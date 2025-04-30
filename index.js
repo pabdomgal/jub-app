@@ -1,159 +1,85 @@
-import express from 'express';
-import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const app = express();
-const port = process.env.PORT || 5000;
-
-app.use(express.json());
-app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Rutas
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// Funciones auxiliares
-function sumarTiempo(fecha, { años = 0, meses = 0, dias = 0 }) {
-  const nuevaFecha = new Date(fecha);
-  nuevaFecha.setFullYear(nuevaFecha.getFullYear() + años);
-  nuevaFecha.setMonth(nuevaFecha.getMonth() + meses);
-  nuevaFecha.setDate(nuevaFecha.getDate() + dias);
-  return nuevaFecha;
+function sumarTiempo(fecha, años = 0, meses = 0, dias = 0) {
+    let nuevaFecha = new Date(fecha);
+    nuevaFecha.setFullYear(nuevaFecha.getFullYear() + años);
+    nuevaFecha.setMonth(nuevaFecha.getMonth() + meses);
+    nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+    return nuevaFecha;
 }
 
-function diferenciaFechas(fechaInicio, fechaFin) {
-  const inicio = new Date(fechaInicio);
-  const fin = new Date(fechaFin);
-
-  let años = fin.getFullYear() - inicio.getFullYear();
-  let meses = fin.getMonth() - inicio.getMonth();
-  let dias = fin.getDate() - inicio.getDate();
-
-  if (dias < 0) {
-    meses--;
-    const diasEnMesAnterior = new Date(fin.getFullYear(), fin.getMonth(), 0).getDate();
-    dias += diasEnMesAnterior;
-  }
-
-  if (meses < 0) {
-    años--;
-    meses += 12;
-  }
-
-  return { años, meses, dias };
+function calcularDiasTotales(años, meses, dias) {
+    return (años * 365) + (meses * 30) + dias;
 }
 
-function convertirACotizacion({ anios, meses, dias }) {
-  const base = new Date(2000, 0, 1);
-  const final = sumarTiempo(base, { años: anios, meses, dias });
-  return Math.floor((final - base) / (1000 * 60 * 60 * 24));
+function diasABloque(añosDias) {
+    const años = Math.floor(añosDias / 365);
+    const restoDias = añosDias % 365;
+    const meses = Math.floor(restoDias / 30);
+    const dias = restoDias % 30;
+    return { años, meses, dias };
 }
 
-app.post('/calcular-jubilacion', (req, res) => {
-  try {
-    const {
-      cotizacionTotal,
-      cotizacionPolicia,
-      fechaActual,
-      fechaNacimiento
-    } = req.body;
+function calcularJubilacion({
+    fechaNacimiento,               // "1970-01-01"
+    fechaReferencia,              // "2025-01-01"
+    cotizacionTotal,              // { años: 38, meses: 3, dias: 0 }
+    cotizacionPolicia             // { años: 36, meses: 6, dias: 0 }
+}) {
+    const fechaRef = new Date(fechaReferencia);
+    const nacimiento = new Date(fechaNacimiento);
 
-    const fechaHoy = new Date(
-      Number(fechaActual.anio),
-      Number(fechaActual.mes) - 1,
-      Number(fechaActual.dia)
-    );
+    // Calcular días totales de cotización
+    const diasCotizados = calcularDiasTotales(cotizacionTotal.años, cotizacionTotal.meses, cotizacionTotal.dias);
+    const diasPolicia = calcularDiasTotales(cotizacionPolicia.años, cotizacionPolicia.meses, cotizacionPolicia.dias);
 
-    const nacimiento = new Date(
-      Number(fechaNacimiento.anio),
-      Number(fechaNacimiento.mes) - 1,
-      Number(fechaNacimiento.dia)
-    );
+    // Bonificación: 20% de los días como policía
+    const diasBonificacion = Math.floor(diasPolicia * 0.20);
 
-    const diasTotales = convertirACotizacion(cotizacionTotal);
-    const diasPolicia = convertirACotizacion(cotizacionPolicia);
-    const bonificacion = Math.floor(diasPolicia * 0.2);
-    const maxAnticipacion = Math.min(5, Math.floor(bonificacion / 365));
-    const tiene36y6Policia = (cotizacionPolicia.anios * 12 + cotizacionPolicia.meses) >= 438;
-
-    const totalCotizadosMeses = cotizacionTotal.anios * 12 + cotizacionTotal.meses;
-    const añoEvaluado = fechaHoy.getFullYear();
+    // Calcular edad ordinaria según el año de referencia
     let edadOrdinaria;
+    const añoReferencia = fechaRef.getFullYear();
 
-    if (añoEvaluado < 2027) {
-      if (totalCotizadosMeses >= 459) {
-        edadOrdinaria = { años: 65, meses: 0 };
-      } else if (añoEvaluado === 2025) {
-        edadOrdinaria = { años: 66, meses: 8 };
-      } else {
-        edadOrdinaria = { años: 66, meses: 10 };
-      }
+    if (añoReferencia === 2025) {
+        edadOrdinaria = diasCotizados >= calcularDiasTotales(38, 3, 0)
+            ? { años: 65, meses: 0 }
+            : { años: 66, meses: 10 };
+    } else if (añoReferencia === 2026) {
+        edadOrdinaria = diasCotizados >= calcularDiasTotales(38, 3, 0)
+            ? { años: 65, meses: 0 }
+            : { años: 66, meses: 10 };
     } else {
-      if (totalCotizadosMeses >= 462) {
-        edadOrdinaria = { años: 65, meses: 0 };
-      } else {
-        edadOrdinaria = { años: 67, meses: 0 };
-      }
+        edadOrdinaria = diasCotizados >= calcularDiasTotales(38, 6, 0)
+            ? { años: 65, meses: 0 }
+            : { años: 67, meses: 0 };
     }
 
-    const anticipacionPermitida = tiene36y6Policia ? 6 : maxAnticipacion;
-    const edadAnticipada = {
-      años: edadOrdinaria.años - anticipacionPermitida,
-      meses: edadOrdinaria.meses
-    };
+    // Fecha ordinaria de jubilación
+    const fechaJubilacionOrdinaria = sumarTiempo(nacimiento, edadOrdinaria.años, edadOrdinaria.meses, 0);
 
-    let fechaEvaluada = new Date(fechaHoy);
-    let encontrada = false;
-    let fechaJubilacionFinal = null;
-
-    while (!encontrada) {
-      const edad = diferenciaFechas(nacimiento, fechaEvaluada);
-      const cotizadosHastaHoy = diferenciaFechas(nacimiento, fechaEvaluada);
-      const diasCotizados = convertirACotizacion(cotizadosHastaHoy) + bonificacion;
-
-      // Determinar si cumple la edad ordinaria
-      const edadOrdinariaCumplida = (
-        edad.años > edadOrdinaria.años ||
-        (edad.años === edadOrdinaria.años && edad.meses >= edadOrdinaria.meses)
-      );
-
-      // Determinar si cumple la edad anticipada
-      const edadAnticipadaCumplida = (
-        edad.años > edadAnticipada.años ||
-        (edad.años === edadAnticipada.años && edad.meses >= edadAnticipada.meses)
-      );
-
-      if ((edadOrdinariaCumplida || edadAnticipadaCumplida) && diasCotizados >= diasTotales) {
-        encontrada = true;
-        fechaJubilacionFinal = new Date(fechaEvaluada);
-        break;
-      }
-
-      fechaEvaluada.setDate(fechaEvaluada.getDate() + 1); // Avanza un día
+    // ¿Cuántos años antes puede jubilarse?
+    let anticipacionPermitida;
+    if (diasPolicia >= calcularDiasTotales(36, 6, 0)) {
+        anticipacionPermitida = calcularDiasTotales(6, 0, 0); // 6 años
+    } else {
+        anticipacionPermitida = Math.min(calcularDiasTotales(5, 0, 0), diasBonificacion); // Hasta 5 años o lo que permita la bonificación
     }
 
-    const edadFinal = diferenciaFechas(nacimiento, fechaJubilacionFinal);
+    // Restar la anticipación a la fecha ordinaria
+    const fechaJubilacionAnticipada = new Date(fechaJubilacionOrdinaria);
+    fechaJubilacionAnticipada.setDate(fechaJubilacionAnticipada.getDate() - anticipacionPermitida);
 
-    res.json({
-      fechaJubilacion: fechaJubilacionFinal.toISOString().split('T')[0],
-      edadEnJubilacion: edadFinal,
-      bonificacionDias: bonificacion,
-      edadOrdinaria,
-      edadJubilacionAnticipada: edadAnticipada
-    });
+    // Calcular edad en la fecha de jubilación
+    const edadJubilacionDias = Math.floor((fechaJubilacionAnticipada - nacimiento) / (1000 * 60 * 60 * 24));
+    const edadJubilacion = diasABloque(edadJubilacionDias);
 
-  } catch (error) {
-    console.error("Error interno:", error);
-    res.status(500).json({ error: "Error interno en el cálculo. Revisa los datos ingresados." });
-  }
-});
+    // Resultado
+    console.log("Fecha de jubilación:", fechaJubilacionAnticipada.toDateString());
+    console.log("Edad en la jubilación:", `${edadJubilacion.años} años, ${edadJubilacion.meses} meses, ${edadJubilacion.dias} días`);
+}
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+// 🧪 Ejemplo de uso:
+calcularJubilacion({
+    fechaNacimiento: "1970-01-01",
+    fechaReferencia: "2025-01-01",
+    cotizacionTotal: { años: 40, meses: 0, dias: 0 },
+    cotizacionPolicia: { años: 37, meses: 0, dias: 0 }
 });
